@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>リアルタイム検索型todoリスト</title>
+</head>
+
+<body>
+  <fieldset>
+    <legend>リアルタイム検索型todoリスト</legend>
+    <a href="ajax_input.php">入力画面</a>
+    <div>
+      検索フォーム：<input type="text" id="input">
+      <button id="search">検索</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>todo</th>
+          <th>deadline</th>
+
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="list">
+        <!-- ここに<tr><td>deadline</td><td>todo</td><tr>の形でデータが入る -->
+      </tbody>
+    </table>
+  </fieldset>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    $('#search').on('click', function () {
+      console.log($('#input').val());
+
+
+      const searchword = $('#input').val();
+      const requestUrl = "ajax_get.php";
+
+      axios
+      .get(`${requestUrl}?searchword=${searchword}`)
+      .then(function(response){
+        // console.log(response);
+        // console.log(response.data[0]);
+        for(var i in response.data){
+          // console.log("i",i);
+        console.log(response.data[i].todo);
+        // console.log(response.data[i].todo);
+        var tr = $("<tr>");
+        // 行にオブジェクトを生成します
+        var td_item = $('<td>').text(response.data[i].id);
+        tr.append(td_item);
+        var td_price = $('<td>').text(response.data[i].todo);
+        tr.append(td_price);
+        var td_orders = $('<td>').text(response.data[i].deadline);
+        tr.append(td_orders);
+        // 行のオブジェクトをテーブルに追加します
+        $('#list').append(tr);
+        }
+      })
+      .catch(function(error){
+        console.log(error);
+      })
+      .finally(function(){});
+    });
+
+  </script>
+</body>
+
+</html>
